@@ -38,7 +38,6 @@ type GalleryImage = {
 }
 
 export default function Home() {
-  const [date, setDate] = useState<Date | undefined>(new Date())
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
   const [mainImage, setMainImage] = useState<GalleryImage>({
     src: IMAGES.rooms.livingRoom,
@@ -50,44 +49,11 @@ export default function Home() {
   }>({
     checkIn: '',
     checkOut: ''
-  });
-
-  const scrollToBooking = () => {
-    const bookingSection = document.getElementById('booking-section')
-    if (bookingSection) {
-      bookingSection.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
-  const locations = [
-    {
-      title: "Wimbledon Station",
-      distance: "0.5 miles",
-      image: IMAGES.attractions.station,
-      width: 600,
-      height: 400,
-    },
-    {
-      title: "Wimbledon Village",
-      distance: "0.8 miles",
-      image: IMAGES.attractions.village,
-      width: 600,
-      height: 400,
-    },
-    {
-      title: "Wimbledon Common",
-      distance: "1.2 miles",
-      image: IMAGES.attractions.common,
-      width: 600,
-      height: 400,
-    },
-  ];
+  })
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
-    const checkIn = formData.get('checkIn') as string
-    const checkOut = formData.get('checkOut') as string
     const bookingSection = document.getElementById('booking-section')
     bookingSection?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -110,7 +76,7 @@ export default function Home() {
       if (!response.ok) throw new Error('Failed to send message')
       toast.success('Message sent successfully! We will get back to you soon.')
       e.currentTarget.reset()
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to send message. Please try again.')
     }
   }
@@ -137,7 +103,7 @@ export default function Home() {
       if (!response.ok) throw new Error('Failed to send reservation request')
       toast.success('Reservation request sent! We will get back to you soon.')
       e.currentTarget.reset()
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to send reservation request. Please try again.')
     }
   }
