@@ -53,7 +53,6 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const formData = new FormData(e.currentTarget)
     const bookingSection = document.getElementById('booking-section')
     bookingSection?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -76,7 +75,7 @@ export default function Home() {
       if (!response.ok) throw new Error('Failed to send message')
       toast.success('Message sent successfully! We will get back to you soon.')
       e.currentTarget.reset()
-    } catch (_error) {
+    } catch {
       toast.error('Failed to send message. Please try again.')
     }
   }
@@ -103,7 +102,7 @@ export default function Home() {
       if (!response.ok) throw new Error('Failed to send reservation request')
       toast.success('Reservation request sent! We will get back to you soon.')
       e.currentTarget.reset()
-    } catch (_error) {
+    } catch {
       toast.error('Failed to send reservation request. Please try again.')
     }
   }
