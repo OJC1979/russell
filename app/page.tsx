@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { CalendarIcon, BedDouble, Bath, Wifi, Car, CookingPot, MapPin, Star, X } from 'lucide-react'
+import { CalendarIcon, BedDouble, Bath, Wifi, Car, CookingPot, MapPin, Star, X, Mail, Phone, MessageSquare } from 'lucide-react'
 import { toast } from 'sonner'
 
 const IMAGES = {
@@ -46,6 +46,10 @@ export default function Home() {
     alt: "Bright and spacious living room with comfortable seating"
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [selectedDates, setSelectedDates] = useState({
+    checkIn: '',
+    checkOut: ''
+  })
 
   const scrollToBooking = () => {
     const bookingSection = document.getElementById('booking-section')
@@ -113,6 +117,75 @@ export default function Home() {
     }
   }
 
+  const handleQuickContact = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    const formData = new FormData(e.currentTarget)
+    const data = {
+      email: formData.get('email'),
+      message: formData.get('message')
+    }
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) throw new Error('Failed to send message')
+      toast.success('Message sent successfully! We will get back to you soon.')
+      e.currentTarget.reset()
+    } catch (error) {
+      toast.error('Failed to send message. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleReservation = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    const formData = new FormData(e.currentTarget)
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      checkIn: formData.get('checkIn'),
+      checkOut: formData.get('checkOut'),
+      message: formData.get('message')
+    }
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) throw new Error('Failed to send reservation request')
+      toast.success('Reservation request sent! We will get back to you soon.')
+      e.currentTarget.reset()
+    } catch (error) {
+      toast.error('Failed to send reservation request. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleCheckAvailability = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    setSelectedDates({
+      checkIn: formData.get('checkIn') as string,
+      checkOut: formData.get('checkOut') as string
+    })
+    const bookingSection = document.getElementById('booking-section')
+    bookingSection?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       <div className="relative container mx-auto px-4 py-8">
@@ -126,19 +199,47 @@ export default function Home() {
               className="object-cover"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-gray-900/40 flex flex-col justify-center items-start text-white p-8">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">Luxury 3 Bed House in Central Wimbledon</h1>
-              <p className="text-xl md:text-2xl mb-4 max-w-lg">Entire house • Sleeps 7 • Central Wimbledon</p>
-              <p className="text-lg md:text-xl mb-8 max-w-lg text-primary-foreground/90">
-                Book direct with owner for guaranteed best rates - no booking fees or hidden charges
-              </p>
-              <Button 
-                onClick={scrollToBooking}
-                size="lg" 
-                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-md transition duration-300 ease-in-out"
-              >
-                Reserve Now
-              </Button>
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-gray-900/40 flex flex-col justify-center px-8">
+              <div className="max-w-4xl">
+                <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">Luxury 3 Bed House in Central Wimbledon</h1>
+                <p className="text-xl md:text-2xl mb-6 text-white">Entire house • Sleeps 7 • Central Wimbledon</p>
+                
+                {/* Quick Date Selector */}
+                <Card className="bg-white/95 backdrop-blur-sm w-full max-w-2xl">
+                  <CardContent className="p-4">
+                    <form onSubmit={handleCheckAvailability} className="flex flex-col md:flex-row gap-4">
+                      <div className="flex-1">
+                        <Label htmlFor="hero-check-in">Check-in</Label>
+                        <Input 
+                          id="hero-check-in" 
+                          name="checkIn" 
+                          type="date" 
+                          required 
+                          className="border-input" 
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <Label htmlFor="hero-check-out">Check-out</Label>
+                        <Input 
+                          id="hero-check-out" 
+                          name="checkOut" 
+                          type="date" 
+                          required 
+                          className="border-input" 
+                        />
+                      </div>
+                      <div className="flex items-end">
+                        <Button 
+                          type="submit" 
+                          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                        >
+                          Check Availability
+                        </Button>
+                      </div>
+                    </form>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </header>
@@ -316,23 +417,50 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Calendar and Pricing */}
+        {/* Contact & Pricing */}
         <section className="mb-12">
-          <h2 className="text-3xl font-semibold mb-6 text-gray-800">Availability and Pricing</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <h2 className="text-3xl font-semibold mb-6 text-gray-800">Contact & Pricing</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Quick Contact Form on the left */}
             <Card className="bg-card text-card-foreground shadow-md">
               <CardHeader>
-                <CardTitle className="text-xl text-primary">Check Availability</CardTitle>
+                <CardTitle className="text-xl text-primary">Quick Enquiry</CardTitle>
               </CardHeader>
               <CardContent>
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  className="rounded-md border"
-                />
+                <form onSubmit={handleQuickContact} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="quick-email">Email Address</Label>
+                    <Input 
+                      id="quick-email" 
+                      name="email" 
+                      type="email" 
+                      placeholder="your@email.com" 
+                      required 
+                      className="border-input" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="quick-message">Message</Label>
+                    <Textarea 
+                      id="quick-message" 
+                      name="message" 
+                      placeholder="Write your message here..." 
+                      className="min-h-[100px] border-input" 
+                      required 
+                    />
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                  </Button>
+                </form>
               </CardContent>
             </Card>
+
+            {/* Pricing on the right */}
             <Card className="bg-card text-card-foreground shadow-md">
               <CardHeader>
                 <CardTitle className="text-xl text-primary">Pricing</CardTitle>
@@ -385,83 +513,104 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Booking Form */}
-        <section id="booking-section">
+        {/* Second section: Full Reservation Form */}
+        <section id="booking-section" className="mb-12">
           <h2 className="text-3xl font-semibold mb-6 text-gray-800">Reserve Your Stay</h2>
           <Card className="bg-card text-card-foreground shadow-md">
             <CardContent className="p-6">
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="check-in">Check-in Date</Label>
-                    <Input 
-                      id="check-in" 
-                      name="check-in" 
-                      type="date" 
-                      required 
-                      className="border-input" 
-                    />
+              <form onSubmit={handleReservation} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Left Column - Contact Details */}
+                  <div className="space-y-4">
+                    {/* Dates and Name */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="check-in" className="text-sm">Check-in</Label>
+                        <Input 
+                          id="check-in" 
+                          name="checkIn" 
+                          type="date" 
+                          required 
+                          className="border-input h-9 text-sm"
+                          value={selectedDates.checkIn}
+                          onChange={(e) => setSelectedDates(prev => ({
+                            ...prev,
+                            checkIn: e.target.value
+                          }))}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="check-out" className="text-sm">Check-out</Label>
+                        <Input 
+                          id="check-out" 
+                          name="checkOut" 
+                          type="date" 
+                          required 
+                          className="border-input h-9 text-sm"
+                          value={selectedDates.checkOut}
+                          onChange={(e) => setSelectedDates(prev => ({
+                            ...prev,
+                            checkOut: e.target.value
+                          }))}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Full Name</Label>
+                      <Input 
+                        id="name" 
+                        name="name" 
+                        placeholder="John Doe" 
+                        required 
+                        className="border-input" 
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email Address</Label>
+                      <Input 
+                        id="email" 
+                        name="email" 
+                        type="email" 
+                        placeholder="john@example.com" 
+                        required 
+                        className="border-input" 
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone Number</Label>
+                      <Input 
+                        id="phone" 
+                        name="phone" 
+                        type="tel" 
+                        placeholder="+44 7700 900000" 
+                        required 
+                        className="border-input" 
+                      />
+                    </div>
                   </div>
+
+                  {/* Right Column - Special Requests */}
                   <div className="space-y-2">
-                    <Label htmlFor="check-out">Check-out Date</Label>
-                    <Input 
-                      id="check-out" 
-                      name="check-out" 
-                      type="date" 
-                      required 
-                      className="border-input" 
+                    <Label htmlFor="message">Special Requests (Optional)</Label>
+                    <Textarea 
+                      id="message" 
+                      name="message" 
+                      placeholder="Any special requests or questions?" 
+                      className="border-input min-h-[280px]" // Made taller to match left column height
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input 
-                      id="name" 
-                      name="name" 
-                      placeholder="John Doe" 
-                      required 
-                      className="border-input" 
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input 
-                      id="email" 
-                      name="email" 
-                      type="email" 
-                      placeholder="john@example.com" 
-                      required 
-                      className="border-input" 
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input 
-                    id="phone" 
-                    name="phone" 
-                    type="tel" 
-                    placeholder="+44 7700 900000" 
-                    required 
-                    className="border-input" 
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="message">Special Requests (Optional)</Label>
-                  <Textarea 
-                    id="message" 
-                    name="message" 
-                    placeholder="Any special requests or questions?" 
-                    className="border-input" 
-                  />
-                </div>
+
+                {/* Submit button - Full width below both columns */}
                 <Button 
                   type="submit" 
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Sending...' : 'Request Reservation'}
+                  {isSubmitting ? 'Sending Request...' : 'Request to Book'}
                 </Button>
               </form>
             </CardContent>
