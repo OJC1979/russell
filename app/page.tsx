@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { CalendarIcon, BedDouble, Bath, Wifi, Car, CookingPot, MapPin, Star, X, Mail, Phone, MessageSquare } from 'lucide-react'
-import { toast } from 'sonner'
+import { Toaster, toast } from 'sonner'
 
 const IMAGES = {
   hero: {
@@ -45,11 +45,6 @@ export default function Home() {
     src: IMAGES.rooms.livingRoom,
     alt: "Bright and spacious living room with comfortable seating"
   })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [selectedDates, setSelectedDates] = useState({
-    checkIn: '',
-    checkOut: ''
-  })
 
   const scrollToBooking = () => {
     const bookingSection = document.getElementById('booking-section')
@@ -84,43 +79,17 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsSubmitting(true)
-
     const formData = new FormData(e.currentTarget)
-    const data = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      checkIn: formData.get('check-in'),
-      checkOut: formData.get('check-out'),
-      message: formData.get('message')
-    }
-
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (!response.ok) throw new Error('Failed to send message')
-
-      toast.success('Request sent successfully! We will get back to you soon.')
-      e.currentTarget.reset()
-    } catch (error) {
-      toast.error('Failed to send message. Please try again.')
-      console.error('Error:', error)
-    } finally {
-      setIsSubmitting(false)
-    }
+    setSelectedDates({
+      checkIn: formData.get('checkIn') as string,
+      checkOut: formData.get('checkOut') as string
+    })
+    const bookingSection = document.getElementById('booking-section')
+    bookingSection?.scrollIntoView({ behavior: 'smooth' })
   }
 
   const handleQuickContact = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsSubmitting(true)
-
     const formData = new FormData(e.currentTarget)
     const data = {
       email: formData.get('email'),
@@ -139,15 +108,11 @@ export default function Home() {
       e.currentTarget.reset()
     } catch (error) {
       toast.error('Failed to send message. Please try again.')
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
   const handleReservation = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsSubmitting(true)
-
     const formData = new FormData(e.currentTarget)
     const data = {
       name: formData.get('name'),
@@ -170,20 +135,7 @@ export default function Home() {
       e.currentTarget.reset()
     } catch (error) {
       toast.error('Failed to send reservation request. Please try again.')
-    } finally {
-      setIsSubmitting(false)
     }
-  }
-
-  const handleCheckAvailability = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    setSelectedDates({
-      checkIn: formData.get('checkIn') as string,
-      checkOut: formData.get('checkOut') as string
-    })
-    const bookingSection = document.getElementById('booking-section')
-    bookingSection?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -207,7 +159,7 @@ export default function Home() {
                 {/* Quick Date Selector */}
                 <Card className="bg-white/95 backdrop-blur-sm w-full max-w-2xl">
                   <CardContent className="p-4">
-                    <form onSubmit={handleCheckAvailability} className="flex flex-col md:flex-row gap-4">
+                    <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4">
                       <div className="flex-1">
                         <Label htmlFor="hero-check-in">Check-in</Label>
                         <Input 
@@ -452,9 +404,8 @@ export default function Home() {
                   <Button 
                     type="submit" 
                     className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                    disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                    Send Message
                   </Button>
                 </form>
               </CardContent>
@@ -608,9 +559,8 @@ export default function Home() {
                 <Button 
                   type="submit" 
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                  disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Sending Request...' : 'Request to Book'}
+                  Request to Book
                 </Button>
               </form>
             </CardContent>

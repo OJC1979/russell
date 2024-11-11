@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import { type TransportOptions } from 'nodemailer'
 
 export const POST = async (req: Request) => {
   try {
