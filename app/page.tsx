@@ -2,14 +2,13 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { Calendar } from '@/components/ui/calendar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { CalendarIcon, BedDouble, Bath, Wifi, Car, CookingPot, MapPin, Star, X, Mail, Phone, MessageSquare } from 'lucide-react'
-import { Toaster, toast } from 'sonner'
+import { BedDouble, Bath, Wifi, Car, CookingPot, MapPin, Star, X } from 'lucide-react'
+import { toast } from 'sonner'
 
 const IMAGES = {
   hero: {
@@ -45,6 +44,13 @@ export default function Home() {
     src: IMAGES.rooms.livingRoom,
     alt: "Bright and spacious living room with comfortable seating"
   })
+  const [selectedDates, setSelectedDates] = useState<{
+    checkIn: string;
+    checkOut: string;
+  }>({
+    checkIn: '',
+    checkOut: ''
+  });
 
   const scrollToBooking = () => {
     const bookingSection = document.getElementById('booking-section')
@@ -80,10 +86,8 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
-    setSelectedDates({
-      checkIn: formData.get('checkIn') as string,
-      checkOut: formData.get('checkOut') as string
-    })
+    const checkIn = formData.get('checkIn') as string
+    const checkOut = formData.get('checkOut') as string
     const bookingSection = document.getElementById('booking-section')
     bookingSection?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -145,7 +149,7 @@ export default function Home() {
         <header className="mb-12 relative">
           <div className="relative w-full h-[500px] rounded-lg overflow-hidden shadow-lg">
             <Image
-              src={IMAGES.hero.main}
+              src="/images/placeholder-hero.jpg"
               alt="Luxury 3 Bed House in Central Wimbledon"
               fill
               className="object-cover"
