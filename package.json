@@ -22,7 +22,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.2.0",
     "shadcn": "^2.1.6",
-    "sonner": "^1.7.0",
+    "sonner": "1.7.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7"
   },

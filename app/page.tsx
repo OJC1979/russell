@@ -62,8 +62,7 @@ import { Textarea } from '@/components/ui/textarea'
 
 
 
-import { BedDouble, Bath, Wifi, Car, CookingPot, MapPin, Star, X } from 'lucide-react'
-
+import { BedDouble, Bath, Wifi, Car, CookingPot, MapPin, Star, X, ChevronLeft, ChevronRight } from 'lucide-react'
 
 
 
@@ -231,6 +230,30 @@ const IMAGES = {
 
 
     common: '/images/attractions/common.jpg',
+
+
+
+
+
+
+
+    theatre: '/images/attractions/theatre.jpg',
+
+
+
+
+
+
+
+    tennis: '/images/attractions/tennis.jpg',
+
+
+
+
+
+
+
+    temple: '/images/attractions/temple.jpg',
 
 
 
@@ -783,6 +806,285 @@ export default function Home() {
 
 
     }
+
+
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const galleryImages = [
+
+
+
+
+
+
+
+    {
+
+
+
+
+
+
+
+      src: IMAGES.rooms.livingRoom,
+
+
+
+
+
+
+
+      alt: "Bright and spacious living room with comfortable seating"
+
+
+
+
+
+
+
+    },
+
+
+
+
+
+
+
+    {
+
+
+
+
+
+
+
+      src: IMAGES.rooms.kitchen,
+
+
+
+
+
+
+
+      alt: "Modern fully equipped kitchen"
+
+
+
+
+
+
+
+    },
+
+
+
+
+
+
+
+    {
+
+
+
+
+
+
+
+      src: IMAGES.rooms.masterBedroom,
+
+
+
+
+
+
+
+      alt: "Master bedroom with king-size bed"
+
+
+
+
+
+
+
+    },
+
+
+
+
+
+
+
+    {
+
+
+
+
+
+
+
+      src: IMAGES.rooms.secondBedroom,
+
+
+
+
+
+
+
+      alt: "Second bedroom with double bed"
+
+
+
+
+
+
+
+    },
+
+
+
+
+
+
+
+    {
+
+
+
+
+
+
+
+      src: IMAGES.rooms.thirdBedroom,
+
+
+
+
+
+
+
+      alt: "Third bedroom with twin beds"
+
+
+
+
+
+
+
+    },
+
+
+
+
+
+
+
+    {
+
+
+
+
+
+
+
+      src: IMAGES.rooms.bathroom,
+
+
+
+
+
+
+
+      alt: "Modern bathroom with shower"
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+  ]
+
+
+
+
+
+
+
+  const handleNavigateGallery = (direction: 'prev' | 'next') => {
+
+
+
+
+
+
+
+    if (!selectedImage) return
+
+
+
+
+
+
+
+    const currentIndex = galleryImages.findIndex(img => img.src === selectedImage.src)
+
+
+
+
+
+
+
+    let newIndex = direction === 'next' 
+
+
+
+
+
+
+
+      ? (currentIndex + 1) % galleryImages.length 
+
+
+
+
+
+
+
+      : (currentIndex - 1 + galleryImages.length) % galleryImages.length
+
+
+
+
+
+
+    setSelectedImage(galleryImages[newIndex])
 
 
 
@@ -1614,7 +1916,7 @@ export default function Home() {
 
 
 
-            <div className="md:w-2/3 relative aspect-[4/3] rounded-lg overflow-hidden shadow-md cursor-pointer"
+            <div className="md:w-2/3 relative aspect-[4/3]">
 
 
 
@@ -1622,7 +1924,7 @@ export default function Home() {
 
 
 
-                 onClick={() => setSelectedImage(mainImage)}>
+              <div 
 
 
 
@@ -1630,7 +1932,7 @@ export default function Home() {
 
 
 
-              <Image
+                className="relative w-full h-full rounded-lg overflow-hidden shadow-md cursor-pointer"
 
 
 
@@ -1638,7 +1940,7 @@ export default function Home() {
 
 
 
-                src={mainImage.src}
+                onClick={() => setSelectedImage(mainImage)}
 
 
 
@@ -1646,7 +1948,7 @@ export default function Home() {
 
 
 
-                alt={mainImage.alt}
+              >
 
 
 
@@ -1654,7 +1956,7 @@ export default function Home() {
 
 
 
-                fill
+                <Image
 
 
 
@@ -1662,7 +1964,7 @@ export default function Home() {
 
 
 
-                className="object-cover hover:scale-105 transition-transform duration-300"
+                  src={mainImage.src}
 
 
 
@@ -1670,7 +1972,7 @@ export default function Home() {
 
 
 
-                sizes="(max-width: 768px) 100vw, 66vw"
+                  alt={mainImage.alt}
 
 
 
@@ -1678,7 +1980,7 @@ export default function Home() {
 
 
 
-                priority
+                  fill
 
 
 
@@ -1686,7 +1988,39 @@ export default function Home() {
 
 
 
-              />
+                  className="object-cover hover:scale-105 transition-transform duration-300"
+
+
+
+
+
+
+
+                  sizes="(max-width: 768px) 100vw, 66vw"
+
+
+
+
+
+
+
+                  priority
+
+
+
+
+
+
+
+                />
+
+
+
+
+
+
+
+              </div>
 
 
 
@@ -1726,207 +2060,7 @@ export default function Home() {
 
 
 
-              {[
-
-
-
-
-
-
-
-                {
-
-
-
-
-
-
-
-                  src: IMAGES.rooms.livingRoom,
-
-
-
-
-
-
-
-                  alt: "Bright and spacious living room with comfortable seating"
-
-
-
-
-
-
-
-                },
-
-
-
-
-
-
-
-                {
-
-
-
-
-
-
-
-                  src: IMAGES.rooms.kitchen,
-
-
-
-
-
-
-
-                  alt: "Modern fully equipped kitchen"
-
-
-
-
-
-
-
-                },
-
-
-
-
-
-
-
-                {
-
-
-
-
-
-
-
-                  src: IMAGES.rooms.masterBedroom,
-
-
-
-
-
-
-
-                  alt: "Master bedroom with king-size bed"
-
-
-
-
-
-
-
-                },
-
-
-
-
-
-
-
-                {
-
-
-
-
-
-
-
-                  src: IMAGES.rooms.secondBedroom,
-
-
-
-
-
-
-
-                  alt: "Second bedroom with double bed"
-
-
-
-
-
-
-
-                },
-
-
-
-
-
-
-
-                {
-
-
-
-
-
-
-
-                  src: IMAGES.rooms.thirdBedroom,
-
-
-
-
-
-
-
-                  alt: "Third bedroom with twin beds"
-
-
-
-
-
-
-
-                },
-
-
-
-
-
-
-
-                {
-
-
-
-
-
-
-
-                  src: IMAGES.rooms.bathroom,
-
-
-
-
-
-
-
-                  alt: "Modern bathroom with shower"
-
-
-
-
-
-
-
-                }
-
-
-
-
-
-
-
-              ].map((image, index) => (
+              {galleryImages.map((image, index) => (
 
 
 
@@ -1959,14 +2093,6 @@ export default function Home() {
 
 
                   onClick={() => {
-
-
-
-
-
-
-
-                    setMainImage(image)
 
 
 
@@ -2214,6 +2340,86 @@ export default function Home() {
 
 
 
+              <button 
+
+
+
+
+
+
+
+                onClick={(e) => {
+
+
+
+
+
+
+
+                  e.stopPropagation()
+
+
+
+
+
+
+
+                  handleNavigateGallery('prev')
+
+
+
+
+
+
+
+                }}
+
+
+
+
+
+
+
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full"
+
+
+
+
+
+
+
+                aria-label="Previous image"
+
+
+
+
+
+
+
+              >
+
+
+
+
+
+
+
+                <ChevronLeft className="h-8 w-8" />
+
+
+
+
+
+
+
+              </button>
+
+
+
+
+
+
+
               <div className="relative w-[90vw] h-[90vh]">
 
 
@@ -2287,6 +2493,86 @@ export default function Home() {
 
 
               </div>
+
+
+
+
+
+
+
+              <button 
+
+
+
+
+
+
+
+                onClick={(e) => {
+
+
+
+
+
+
+
+                  e.stopPropagation()
+
+
+
+
+
+
+
+                  handleNavigateGallery('next')
+
+
+
+
+
+
+
+                }}
+
+
+
+
+
+
+
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full"
+
+
+
+
+
+
+
+                aria-label="Next image"
+
+
+
+
+
+
+
+              >
+
+
+
+
+
+
+
+                <ChevronRight className="h-8 w-8" />
+
+
+
+
+
+
+
+              </button>
 
 
 
@@ -2535,7 +2821,6 @@ export default function Home() {
 
 
                       <p className="text-sm text-muted-foreground">{review.date}</p>
-
 
 
 
@@ -3997,7 +4282,6 @@ export default function Home() {
 
 
 
-
                       id="message" 
 
 
@@ -4334,6 +4618,150 @@ export default function Home() {
 
 
 
+              },
+
+
+
+
+
+
+
+              {
+
+
+
+
+
+
+
+                name: "New Wimbledon Theatre",
+
+
+
+
+
+
+
+                distance: "3 min walk",
+
+
+
+
+
+
+
+                image: "/images/attractions/theatre.jpg",
+
+
+
+
+
+
+
+                description: "Historic Edwardian theatre hosting West End shows"
+
+
+
+
+
+
+
+              },
+
+
+
+
+
+
+
+              {
+
+
+
+
+
+
+
+                name: "All England Tennis Club",
+
+
+
+
+
+
+
+                distance: "33 min walk",
+
+
+
+
+
+
+
+                image: "/images/attractions/tennis.jpg",
+
+
+
+
+
+
+
+                description: "Home of the Wimbledon Championships and Tennis Museum"
+
+
+
+
+
+
+
+              },
+
+
+
+
+
+
+
+              {
+
+
+
+
+
+
+
+                name: "Buddhapadipa Temple",
+
+
+
+
+
+
+
+                distance: "38 min walk",
+
+
+
+
+
+
+
+                image: "/images/attractions/temple.jpg",
+
+
+
+
+
+
+
+                description: "Traditional Thai Buddhist temple with beautiful gardens"
+
+
+
+
+
+
+
               }
 
 
@@ -4447,7 +4875,6 @@ export default function Home() {
 
 
                   <p className="text-sm text-muted-foreground">{attraction.description}</p>
-
 
 
 
